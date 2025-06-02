@@ -204,22 +204,24 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="border-t border-gray-200 dark:border-gray-700 p-4">
-        <SidebarMenuItem>
-          <SidebarMenuButton 
-            asChild
-            className={`w-full justify-start group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:p-0 ${
-              location.pathname === '/settings' 
-                ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400' 
-                : 'dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-700 dark:hover:text-orange-400'
-            }`}
-            tooltip="Settings"
-          >
-            <Link to="/settings" className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center">
-              <Settings className="h-4 w-4 flex-shrink-0" />
-              <span className="font-medium group-data-[collapsible=icon]:hidden">Settings</span>
-            </Link>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
+        <SidebarMenu>
+          <SidebarMenuItem className="list-none">
+            <SidebarMenuButton 
+              asChild
+              className={`w-full justify-start group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:p-2 ${
+                location.pathname === '/settings' 
+                  ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 border-r-2 border-orange-500' 
+                  : 'dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-700 dark:hover:text-orange-400'
+              }`}
+              tooltip="Settings"
+            >
+              <Link to="/settings" className="flex items-center gap-3 px-3 py-2 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center">
+                <Settings className="h-4 w-4 flex-shrink-0" />
+                <span className="font-medium group-data-[collapsible=icon]:hidden">Settings</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
   );
