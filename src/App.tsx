@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,6 +12,7 @@ import Board from "./pages/Board";
 import Notes from "./pages/Notes";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import EmailVerification from "./pages/EmailVerification";
 
 const queryClient = new QueryClient();
 
@@ -71,6 +71,7 @@ const App = () => (
                 <Signup />
               </PublicRoute>
             } />
+            <Route path="/verify-email" element={<EmailVerification />} />
             <Route path="/app" element={
               <ProtectedRoute>
                 <Index />
