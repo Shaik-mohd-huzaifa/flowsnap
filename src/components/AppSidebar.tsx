@@ -17,6 +17,7 @@ import {
   Settings,
   Home,
   LayoutDashboard,
+  Bot,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -35,6 +36,11 @@ const workspaceItems = [
     title: "My Notes",
     url: "/notes",
     icon: FileText,
+  },
+  {
+    title: "AI Assistant",
+    url: "/ai-assistant",
+    icon: Bot,
   },
 ];
 
