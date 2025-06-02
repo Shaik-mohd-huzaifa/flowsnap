@@ -42,17 +42,17 @@ const workspaceItems = [
   },
   {
     title: "My Notes",
-    url: "/app",
+    url: "/notes",
     icon: FileText,
   },
   {
     title: "Favorites",
-    url: "/app",
+    url: "/favorites",
     icon: Star,
   },
   {
     title: "Archive",
-    url: "/app",
+    url: "/archive",
     icon: Archive,
   },
 ];
@@ -122,8 +122,10 @@ export function AppSidebar() {
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton 
                       asChild 
-                      className={`w-full justify-start hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-700 dark:hover:text-orange-400 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:p-0 ${
-                        isActive ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 border-r-2 border-orange-500' : 'dark:text-gray-300'
+                      className={`w-full justify-start group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:p-0 ${
+                        isActive 
+                          ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 border-r-2 border-orange-500' 
+                          : 'dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-700 dark:hover:text-orange-400'
                       }`}
                       tooltip={item.title}
                     >
@@ -151,7 +153,7 @@ export function AppSidebar() {
               {folders.map((folder) => (
                 <SidebarMenuItem key={folder.name}>
                   <SidebarMenuButton 
-                    className="w-full justify-between hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-700 dark:hover:text-orange-400 dark:text-gray-300 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:p-0"
+                    className="w-full justify-between dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-700 dark:hover:text-orange-400 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:p-0"
                     tooltip={folder.name}
                   >
                     <div className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center">
@@ -176,7 +178,7 @@ export function AppSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton 
-                  className="w-full justify-start hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-700 dark:hover:text-orange-400 dark:text-gray-300 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:p-0"
+                  className="w-full justify-start dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-700 dark:hover:text-orange-400 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:p-0"
                   tooltip="Tags"
                 >
                   <div className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center">
@@ -187,7 +189,7 @@ export function AppSidebar() {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton 
-                  className="w-full justify-start hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-700 dark:hover:text-orange-400 dark:text-gray-300 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:p-0"
+                  className="w-full justify-start dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-700 dark:hover:text-orange-400 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:p-0"
                   tooltip="Trash"
                 >
                   <div className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center">
@@ -205,8 +207,10 @@ export function AppSidebar() {
         <SidebarMenuItem>
           <SidebarMenuButton 
             asChild
-            className={`w-full justify-start hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-700 dark:hover:text-orange-400 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:p-0 ${
-              location.pathname === '/settings' ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400' : 'dark:text-gray-300'
+            className={`w-full justify-start group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:p-0 ${
+              location.pathname === '/settings' 
+                ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400' 
+                : 'dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-700 dark:hover:text-orange-400'
             }`}
             tooltip="Settings"
           >
