@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import {
   Sidebar,
@@ -26,28 +25,34 @@ import {
   Tag,
   Archive,
   Home,
+  LayoutDashboard,
 } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 
 const workspaceItems = [
   {
     title: "Home",
-    url: "#",
+    url: "/app",
     icon: Home,
-    isActive: true,
+  },
+  {
+    title: "Board",
+    url: "/board",
+    icon: LayoutDashboard,
   },
   {
     title: "My Notes",
-    url: "#",
+    url: "/app",
     icon: FileText,
   },
   {
     title: "Favorites",
-    url: "#",
+    url: "/app",
     icon: Star,
   },
   {
     title: "Archive",
-    url: "#",
+    url: "/app",
     icon: Archive,
   },
 ];
@@ -61,6 +66,7 @@ const folders = [
 
 export function AppSidebar() {
   const [searchQuery, setSearchQuery] = useState("");
+  const location = useLocation();
 
   return (
     <Sidebar className="border-r border-gray-200">
@@ -89,21 +95,24 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {workspaceItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
-                    asChild 
-                    className={`w-full justify-start hover:bg-orange-50 hover:text-orange-700 ${
-                      item.isActive ? 'bg-orange-100 text-orange-700 border-r-2 border-orange-500' : ''
-                    }`}
-                  >
-                    <a href={item.url} className="flex items-center gap-3 px-3 py-2">
-                      <item.icon className="h-4 w-4" />
-                      <span className="font-medium">{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {workspaceItems.map((item) => {
+                const isActive = location.pathname === item.url;
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton 
+                      asChild 
+                      className={`w-full justify-start hover:bg-orange-50 hover:text-orange-700 ${
+                        isActive ? 'bg-orange-100 text-orange-700 border-r-2 border-orange-500' : ''
+                      }`}
+                    >
+                      <Link to={item.url} className="flex items-center gap-3 px-3 py-2">
+                        <item.icon className="h-4 w-4" />
+                        <span className="font-medium">{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
