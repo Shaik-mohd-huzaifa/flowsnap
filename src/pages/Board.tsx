@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -18,10 +19,23 @@ import {
   AlertCircle,
 } from "lucide-react";
 
-const boardData = {
+interface Task {
+  id: string;
+  title: string;
+  description: string;
+  assignee: string;
+  dueDate: string;
+  priority: "high" | "medium" | "low";
+}
+
+interface BoardData {
+  [key: string]: Task[];
+}
+
+const initialBoardData: BoardData = {
   "To Do": [
     {
-      id: 1,
+      id: "1",
       title: "Design landing page mockup",
       description: "Create wireframes and high-fidelity designs for the new landing page",
       assignee: "Alice Johnson",
@@ -29,7 +43,7 @@ const boardData = {
       priority: "high",
     },
     {
-      id: 2,
+      id: "2",
       title: "Research competitor features",
       description: "Analyze top 5 competitors and document key features",
       assignee: "Bob Smith",
@@ -39,7 +53,7 @@ const boardData = {
   ],
   "In Progress": [
     {
-      id: 3,
+      id: "3",
       title: "Implement user authentication",
       description: "Set up login, signup, and password reset functionality",
       assignee: "Charlie Brown",
@@ -47,7 +61,7 @@ const boardData = {
       priority: "high",
     },
     {
-      id: 4,
+      id: "4",
       title: "Write API documentation",
       description: "Document all REST endpoints with examples and schemas",
       assignee: "Diana Prince",
@@ -57,7 +71,7 @@ const boardData = {
   ],
   "Review": [
     {
-      id: 5,
+      id: "5",
       title: "Code review for payment system",
       description: "Review and test the new payment integration code",
       assignee: "Eve Wilson",
@@ -67,7 +81,7 @@ const boardData = {
   ],
   "Done": [
     {
-      id: 6,
+      id: "6",
       title: "Set up development environment",
       description: "Configure Docker containers and CI/CD pipeline",
       assignee: "Frank Miller",
@@ -75,7 +89,7 @@ const boardData = {
       priority: "medium",
     },
     {
-      id: 7,
+      id: "7",
       title: "Create project timeline",
       description: "Define milestones and deliverables for Q2",
       assignee: "Grace Lee",
@@ -100,6 +114,56 @@ const getPriorityIcon = (priority: string) => {
 
 const Board = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [boardData, setBoardData] = useState<BoardData>(initialBoardData);
+
+  const handleDragEnd = (result: DropResult) => {
+    const { destination, source, draggableId } = result;
+
+    // If no destination, return
+    if (!destination) return;
+
+    // If dropped in the same position, return
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+
+    const sourceColumn = boardData[source.droppableId];
+    const destColumn = boardData[destination.droppableId];
+    const draggedTask = sourceColumn.find(task => task.id === draggableId);
+
+    if (!draggedTask) return;
+
+    // Moving within the same column
+    if (source.droppableId === destination.droppableId) {
+      const newTasks = Array.from(sourceColumn);
+      newTasks.splice(source.index, 1);
+      newTasks.splice(destination.index, 0, draggedTask);
+
+      setBoardData({
+        ...boardData,
+        [source.droppableId]: newTasks,
+      });
+    } else {
+      // Moving to a different column
+      const sourceTasks = Array.from(sourceColumn);
+      const destTasks = Array.from(destColumn);
+
+      sourceTasks.splice(source.index, 1);
+      destTasks.splice(destination.index, 0, draggedTask);
+
+      setBoardData({
+        ...boardData,
+        [source.droppableId]: sourceTasks,
+        [destination.droppableId]: destTasks,
+      });
+    }
+  };
+
+  const totalTasks = Object.values(boardData).reduce((sum, tasks) => sum + tasks.length, 0);
+  const inProgressTasks = boardData["In Progress"].length;
 
   return (
     <div className="min-h-screen bg-gray-50 font-inter">
@@ -148,7 +212,7 @@ const Board = () => {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-orange-700 text-sm font-medium">Total Tasks</p>
-                        <p className="text-2xl font-bold text-orange-900">12</p>
+                        <p className="text-2xl font-bold text-orange-900">{totalTasks}</p>
                       </div>
                       <CheckCircle className="h-8 w-8 text-orange-600" />
                     </div>
@@ -158,7 +222,7 @@ const Board = () => {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-gray-600 text-sm font-medium">In Progress</p>
-                        <p className="text-2xl font-bold text-gray-900">2</p>
+                        <p className="text-2xl font-bold text-gray-900">{inProgressTasks}</p>
                       </div>
                       <Clock className="h-8 w-8 text-gray-400" />
                     </div>
@@ -186,61 +250,89 @@ const Board = () => {
                 </div>
 
                 {/* Kanban Board */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {Object.entries(boardData).map(([columnTitle, tasks]) => (
-                    <div key={columnTitle} className="bg-gray-50 rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="font-instrument text-lg font-semibold text-gray-900">
-                          {columnTitle}
-                        </h3>
-                        <span className="bg-gray-200 text-gray-700 text-sm px-2 py-1 rounded-full">
-                          {tasks.length}
-                        </span>
-                      </div>
-                      
-                      <div className="space-y-3">
-                        {tasks.map((task) => (
-                          <Card key={task.id} className="bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                            <CardHeader className="pb-2">
-                              <div className="flex items-start justify-between">
-                                <CardTitle className="text-sm font-medium text-gray-900 line-clamp-2">
-                                  {task.title}
-                                </CardTitle>
-                                <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                                  <MoreHorizontal className="h-3 w-3" />
-                                </Button>
-                              </div>
-                            </CardHeader>
-                            <CardContent className="pt-0">
-                              <p className="text-xs text-gray-600 mb-3 line-clamp-2">
-                                {task.description}
-                              </p>
-                              
-                              <div className="flex items-center justify-between text-xs">
-                                <div className="flex items-center gap-1">
-                                  {getPriorityIcon(task.priority)}
-                                  <span className="text-gray-600">{task.assignee}</span>
-                                </div>
-                                <div className="flex items-center gap-1 text-gray-500">
-                                  <Calendar className="h-3 w-3" />
-                                  <span>{new Date(task.dueDate).toLocaleDateString()}</span>
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
+                <DragDropContext onDragEnd={handleDragEnd}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {Object.entries(boardData).map(([columnTitle, tasks]) => (
+                      <div key={columnTitle} className="bg-gray-50 rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="font-instrument text-lg font-semibold text-gray-900">
+                            {columnTitle}
+                          </h3>
+                          <span className="bg-gray-200 text-gray-700 text-sm px-2 py-1 rounded-full">
+                            {tasks.length}
+                          </span>
+                        </div>
                         
-                        <Button 
-                          variant="ghost" 
-                          className="w-full border-2 border-dashed border-gray-300 hover:border-orange-300 hover:bg-orange-50 text-gray-500 hover:text-orange-600"
-                        >
-                          <Plus className="h-4 w-4 mr-2" />
-                          Add Task
-                        </Button>
+                        <Droppable droppableId={columnTitle}>
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.droppableProps}
+                              className={`space-y-3 min-h-[200px] ${
+                                snapshot.isDraggingOver ? 'bg-orange-50 rounded-lg p-2' : ''
+                              }`}
+                            >
+                              {tasks.map((task, index) => (
+                                <Draggable key={task.id} draggableId={task.id} index={index}>
+                                  {(provided, snapshot) => (
+                                    <div
+                                      ref={provided.innerRef}
+                                      {...provided.draggableProps}
+                                      {...provided.dragHandleProps}
+                                      className={`${
+                                        snapshot.isDragging 
+                                          ? 'transform rotate-2 shadow-xl' 
+                                          : 'hover:shadow-md'
+                                      } transition-all duration-200`}
+                                    >
+                                      <Card className="bg-white shadow-sm cursor-move">
+                                        <CardHeader className="pb-2">
+                                          <div className="flex items-start justify-between">
+                                            <CardTitle className="text-sm font-medium text-gray-900 line-clamp-2">
+                                              {task.title}
+                                            </CardTitle>
+                                            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                                              <MoreHorizontal className="h-3 w-3" />
+                                            </Button>
+                                          </div>
+                                        </CardHeader>
+                                        <CardContent className="pt-0">
+                                          <p className="text-xs text-gray-600 mb-3 line-clamp-2">
+                                            {task.description}
+                                          </p>
+                                          
+                                          <div className="flex items-center justify-between text-xs">
+                                            <div className="flex items-center gap-1">
+                                              {getPriorityIcon(task.priority)}
+                                              <span className="text-gray-600">{task.assignee}</span>
+                                            </div>
+                                            <div className="flex items-center gap-1 text-gray-500">
+                                              <Calendar className="h-3 w-3" />
+                                              <span>{new Date(task.dueDate).toLocaleDateString()}</span>
+                                            </div>
+                                          </div>
+                                        </CardContent>
+                                      </Card>
+                                    </div>
+                                  )}
+                                </Draggable>
+                              ))}
+                              {provided.placeholder}
+                              
+                              <Button 
+                                variant="ghost" 
+                                className="w-full border-2 border-dashed border-gray-300 hover:border-orange-300 hover:bg-orange-50 text-gray-500 hover:text-orange-600"
+                              >
+                                <Plus className="h-4 w-4 mr-2" />
+                                Add Task
+                              </Button>
+                            </div>
+                          )}
+                        </Droppable>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                </DragDropContext>
               </div>
             </div>
           </main>
