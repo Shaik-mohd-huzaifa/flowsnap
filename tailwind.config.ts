@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -18,6 +19,10 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				'serif': ['Instrument Serif', 'serif'],
+				'instrument': ['Instrument Serif', 'serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -25,8 +30,18 @@ export default {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				primary: {
-					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					DEFAULT: '#EA580C',
+					50: '#FEF3F2',
+					100: '#FEE4E2',
+					200: '#FECDCA',
+					300: '#FDAA A5',
+					400: '#FB7A7A',
+					500: '#EA580C',
+					600: '#DC2626',
+					700: '#B91C1C',
+					800: '#991B1B',
+					900: '#7F1D1D',
+					foreground: '#FFFFFF'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
@@ -61,6 +76,18 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				orange: {
+					50: '#FFF7ED',
+					100: '#FFEDD5',
+					200: '#FED7AA',
+					300: '#FDBA74',
+					400: '#FB923C',
+					500: '#EA580C',
+					600: '#DC2626',
+					700: '#C2410C',
+					800: '#9A3412',
+					900: '#7C2D12',
 				}
 			},
 			borderRadius: {
@@ -84,11 +111,22 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'fade-in': {
+					'0%': {
+						opacity: '0',
+						transform: 'translateY(10px)'
+					},
+					'100%': {
+						opacity: '1',
+						transform: 'translateY(0)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'fade-in': 'fade-in 0.3s ease-out'
 			}
 		}
 	},
