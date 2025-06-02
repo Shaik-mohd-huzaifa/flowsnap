@@ -53,12 +53,6 @@ const Landing = () => {
               </h1>
             </div>
             
-            <nav className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-600 hover:text-orange-600 font-inter">Features</a>
-              <a href="#pricing" className="text-gray-600 hover:text-orange-600 font-inter">Pricing</a>
-              <a href="#about" className="text-gray-600 hover:text-orange-600 font-inter">About</a>
-            </nav>
-            
             <div className="flex items-center gap-4">
               <Link to="/app">
                 <Button variant="ghost" className="text-gray-600 hover:text-orange-600">
@@ -169,116 +163,6 @@ const Landing = () => {
                 <CardDescription className="font-inter text-center">
                   End-to-end encryption and enterprise-grade security for your data.
                 </CardDescription>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing Section */}
-      <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 relative z-10">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="font-instrument text-4xl font-semibold text-gray-900 mb-4">
-              Simple, transparent pricing
-            </h2>
-            <p className="font-inter text-xl text-gray-600">
-              Choose the plan that works best for you and your team.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <Card className="border-gray-200">
-              <CardHeader className="text-center pb-8">
-                <CardTitle className="font-instrument text-2xl">Personal</CardTitle>
-                <div className="mt-4">
-                  <span className="text-4xl font-bold">$0</span>
-                  <span className="text-gray-600 ml-2">forever</span>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <Check className="h-5 w-5 text-green-500" />
-                  <span className="font-inter">Up to 1,000 notes</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Check className="h-5 w-5 text-green-500" />
-                  <span className="font-inter">Basic collaboration</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Check className="h-5 w-5 text-green-500" />
-                  <span className="font-inter">Mobile & web access</span>
-                </div>
-                <Button className="w-full mt-8" variant="outline">
-                  Get Started
-                </Button>
-              </CardContent>
-            </Card>
-            
-            <Card className="border-orange-200 relative">
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <span className="bg-orange-500 text-white px-4 py-1 rounded-full text-sm font-medium">
-                  Most Popular
-                </span>
-              </div>
-              <CardHeader className="text-center pb-8">
-                <CardTitle className="font-instrument text-2xl">Pro</CardTitle>
-                <div className="mt-4">
-                  <span className="text-4xl font-bold">$8</span>
-                  <span className="text-gray-600 ml-2">per month</span>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <Check className="h-5 w-5 text-green-500" />
-                  <span className="font-inter">Unlimited notes</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Check className="h-5 w-5 text-green-500" />
-                  <span className="font-inter">Advanced collaboration</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Check className="h-5 w-5 text-green-500" />
-                  <span className="font-inter">Priority support</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Check className="h-5 w-5 text-green-500" />
-                  <span className="font-inter">Advanced integrations</span>
-                </div>
-                <Button className="w-full mt-8 bg-orange-500 hover:bg-orange-600">
-                  Start Pro Trial
-                </Button>
-              </CardContent>
-            </Card>
-            
-            <Card className="border-gray-200">
-              <CardHeader className="text-center pb-8">
-                <CardTitle className="font-instrument text-2xl">Team</CardTitle>
-                <div className="mt-4">
-                  <span className="text-4xl font-bold">$12</span>
-                  <span className="text-gray-600 ml-2">per user/month</span>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <Check className="h-5 w-5 text-green-500" />
-                  <span className="font-inter">Everything in Pro</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Check className="h-5 w-5 text-green-500" />
-                  <span className="font-inter">Team management</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Check className="h-5 w-5 text-green-500" />
-                  <span className="font-inter">Advanced permissions</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Check className="h-5 w-5 text-green-500" />
-                  <span className="font-inter">Analytics & insights</span>
-                </div>
-                <Button className="w-full mt-8" variant="outline">
-                  Contact Sales
-                </Button>
               </CardContent>
             </Card>
           </div>
