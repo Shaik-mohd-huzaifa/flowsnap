@@ -2,7 +2,7 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import ReactMarkdown from "react-markdown";
 import {
   ArrowLeft,
   Star,
@@ -24,6 +24,7 @@ import {
   Type,
   Image,
   Table,
+  Edit,
 } from "lucide-react";
 
 interface Note {
@@ -44,24 +45,42 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
   const [title, setTitle] = useState(note?.title || "Untitled");
   const [content, setContent] = useState(note?.content || "");
   const [isFavorite, setIsFavorite] = useState(note?.isFavorite || false);
+  const [isEditMode, setIsEditMode] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [selectedText, setSelectedText] = useState("");
+  const [selectionStart, setSelectionStart] = useState(0);
+  const [selectionEnd, setSelectionEnd] = useState(0);
+
+  const handleTextSelection = () => {
+    if (textareaRef.current) {
+      const start = textareaRef.current.selectionStart;
+      const end = textareaRef.current.selectionEnd;
+      const selected = content.substring(start, end);
+      setSelectedText(selected);
+      setSelectionStart(start);
+      setSelectionEnd(end);
+    }
+  };
 
   const insertText = (before: string, after: string = "") => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
+    if (selectedText) {
+      const newText = content.substring(0, selectionStart) + before + selectedText + after + content.substring(selectionEnd);
+      setContent(newText);
+    } else {
+      const textarea = textareaRef.current;
+      if (!textarea) return;
 
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = content.substring(start, end);
-    const newText = content.substring(0, start) + before + selectedText + after + content.substring(end);
-    
-    setContent(newText);
-    
-    // Set cursor position after the inserted text
-    setTimeout(() => {
-      textarea.focus();
-      textarea.setSelectionRange(start + before.length, start + before.length + selectedText.length);
-    }, 0);
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const newText = content.substring(0, start) + before + after + content.substring(end);
+      
+      setContent(newText);
+      
+      setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(start + before.length, start + before.length);
+      }, 0);
+    }
   };
 
   const formatButtons = [
@@ -76,10 +95,6 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
     { icon: Link, label: "Link", action: () => insertText("[", "](url)") },
     { icon: Image, label: "Image", action: () => insertText("![alt text](", ")") },
     { icon: Table, label: "Table", action: () => insertText("| Column 1 | Column 2 |\n|----------|----------|\n| Cell 1   | Cell 2   |\n") },
-    { icon: AlignLeft, label: "Align Left", action: () => insertText("<div align='left'>", "</div>") },
-    { icon: AlignCenter, label: "Align Center", action: () => insertText("<div align='center'>", "</div>") },
-    { icon: AlignRight, label: "Align Right", action: () => insertText("<div align='right'>", "</div>") },
-    { icon: Highlighter, label: "Highlight", action: () => insertText("==", "==") },
     { icon: Type, label: "Heading", action: () => insertText("# ") },
   ];
 
@@ -107,6 +122,16 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
         </div>
         
         <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsEditMode(!isEditMode)}
+            className="hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <Edit className="h-4 w-4 mr-2" />
+            {isEditMode ? "Preview" : "Edit"}
+          </Button>
+          
           <Button
             variant="ghost"
             size="sm"
@@ -152,13 +177,35 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
           placeholder="Untitled"
         />
         
-        <Textarea
-          ref={textareaRef}
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          className="flex-1 border-none p-0 resize-none focus:ring-0 text-lg leading-relaxed placeholder:text-gray-400 dark:bg-gray-900 dark:text-white"
-          placeholder="Start writing your note..."
-        />
+        {isEditMode ? (
+          <textarea
+            ref={textareaRef}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            onSelect={handleTextSelection}
+            className="flex-1 border-none p-0 resize-none focus:ring-0 text-lg leading-relaxed placeholder:text-gray-400 dark:bg-gray-900 dark:text-white outline-none"
+            placeholder="Start writing your note..."
+          />
+        ) : (
+          <div className="flex-1 prose prose-lg max-w-none dark:prose-invert">
+            <ReactMarkdown
+              components={{
+                h1: ({ children }) => <h1 className="text-3xl font-bold mb-4">{children}</h1>,
+                h2: ({ children }) => <h2 className="text-2xl font-bold mb-3">{children}</h2>,
+                h3: ({ children }) => <h3 className="text-xl font-bold mb-2">{children}</h3>,
+                p: ({ children }) => <p className="mb-4 text-gray-700 dark:text-gray-300">{children}</p>,
+                strong: ({ children }) => <strong className="font-bold">{children}</strong>,
+                em: ({ children }) => <em className="italic">{children}</em>,
+                code: ({ children }) => <code className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">{children}</code>,
+                blockquote: ({ children }) => <blockquote className="border-l-4 border-orange-500 pl-4 italic">{children}</blockquote>,
+                ul: ({ children }) => <ul className="list-disc pl-6 mb-4">{children}</ul>,
+                ol: ({ children }) => <ol className="list-decimal pl-6 mb-4">{children}</ol>,
+              }}
+            >
+              {content || "Start writing your note..."}
+            </ReactMarkdown>
+          </div>
+        )}
         
         <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400">
           <span>Last edited {note?.updatedAt || "just now"}</span>
