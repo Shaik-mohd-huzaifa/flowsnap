@@ -15,79 +15,56 @@ import {
 } from "lucide-react";
 import { NoteCard } from "@/components/NoteCard";
 import { NoteEditor } from "@/components/NoteEditor";
-
-const allNotes = [
-  {
-    id: 1,
-    title: "Project Planning Document",
-    content: "Outlined the key milestones and deliverables for Q1 2024. This document covers all aspects of the upcoming project including timeline, resources, and expected outcomes.",
-    updatedAt: "2 hours ago",
-    folder: "Work Projects",
-    isFavorite: true,
-  },
-  {
-    id: 2,
-    title: "Meeting Notes - Team Sync",
-    content: "Discussed progress on current initiatives and upcoming deadlines. Key points covered include sprint planning, resource allocation, and blockers.",
-    updatedAt: "1 day ago",
-    folder: "Meeting Notes",
-    isFavorite: false,
-  },
-  {
-    id: 3,
-    title: "Ideas for New Features",
-    content: "Brainstorming session on potential improvements to user experience. Includes wireframes and user feedback analysis.",
-    updatedAt: "3 days ago",
-    folder: "Ideas",
-    isFavorite: true,
-  },
-  {
-    id: 4,
-    title: "Personal Goals 2024",
-    content: "Setting objectives for personal and professional growth this year. Focus areas include skill development and career advancement.",
-    updatedAt: "1 week ago",
-    folder: "Personal",
-    isFavorite: false,
-  },
-  {
-    id: 5,
-    title: "Research Notes - AI Trends",
-    content: "Comprehensive research on emerging AI technologies and their potential applications in our industry.",
-    updatedAt: "2 weeks ago",
-    folder: "Research",
-    isFavorite: false,
-  },
-  {
-    id: 6,
-    title: "Book Summary - The Lean Startup",
-    content: "Key insights and takeaways from Eric Ries' book on building successful startups through validated learning.",
-    updatedAt: "3 weeks ago",
-    folder: "Learning",
-    isFavorite: true,
-  },
-];
+import { useNotes } from "@/hooks/useNotes";
 
 export default function Notes() {
-  const [selectedNote, setSelectedNote] = useState<number | null>(null);
+  const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isCreatingNew, setIsCreatingNew] = useState(false);
 
-  const filteredNotes = allNotes.filter(note =>
+  const { notes, isLoading, createNote } = useNotes();
+
+  const filteredNotes = notes.filter(note =>
     note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     note.content.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  if (selectedNote) {
-    const note = allNotes.find(n => n.id === selectedNote);
+  const selectedNote = selectedNoteId ? notes.find(n => n.id === selectedNoteId) : null;
+
+  const handleCreateNewNote = () => {
+    setIsCreatingNew(true);
+    setSelectedNoteId(null);
+  };
+
+  const handleCloseEditor = () => {
+    setIsCreatingNew(false);
+    setSelectedNoteId(null);
+  };
+
+  if (selectedNote || isCreatingNew) {
     return (
       <SidebarProvider>
         <div className="min-h-screen flex w-full bg-gray-50 dark:bg-gray-900">
           <AppSidebar />
           <main className="flex-1 flex flex-col h-screen">
             <NoteEditor 
-              note={note} 
-              onClose={() => setSelectedNote(null)}
+              note={selectedNote || undefined} 
+              onClose={handleCloseEditor}
             />
+          </main>
+        </div>
+      </SidebarProvider>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full bg-gray-50 dark:bg-gray-900">
+          <AppSidebar />
+          <main className="flex-1 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-500"></div>
           </main>
         </div>
       </SidebarProvider>
@@ -161,7 +138,10 @@ export default function Notes() {
                 Sort
               </Button>
               
-              <Button className="bg-orange-500 hover:bg-orange-600 text-white">
+              <Button 
+                onClick={handleCreateNewNote}
+                className="bg-orange-500 hover:bg-orange-600 text-white"
+              >
                 <Plus className="h-4 w-4 mr-2" />
                 New Note
               </Button>
@@ -182,7 +162,10 @@ export default function Notes() {
                   <p className="text-gray-600 dark:text-gray-400 mb-6">
                     {searchQuery ? "Try adjusting your search terms." : "Get started by creating your first note."}
                   </p>
-                  <Button className="bg-orange-500 hover:bg-orange-600 text-white">
+                  <Button 
+                    onClick={handleCreateNewNote}
+                    className="bg-orange-500 hover:bg-orange-600 text-white"
+                  >
                     <Plus className="h-4 w-4 mr-2" />
                     Create Note
                   </Button>
@@ -195,9 +178,16 @@ export default function Notes() {
                   {filteredNotes.map((note) => (
                     <NoteCard
                       key={note.id}
-                      note={note}
+                      note={{
+                        id: parseInt(note.id),
+                        title: note.title,
+                        content: note.content,
+                        updatedAt: new Date(note.updated_at).toLocaleDateString(),
+                        folder: "Personal",
+                        isFavorite: false,
+                      }}
                       viewMode={viewMode}
-                      onClick={() => setSelectedNote(note.id)}
+                      onClick={() => setSelectedNoteId(note.id)}
                     />
                   ))}
                 </div>

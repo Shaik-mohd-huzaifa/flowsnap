@@ -1,11 +1,10 @@
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import ReactMarkdown from "react-markdown";
 import {
   ArrowLeft,
-  Star,
   MoreVertical,
   Bold,
   Italic,
@@ -16,25 +15,13 @@ import {
   Quote,
   Code,
   Save,
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
   Strikethrough,
-  Highlighter,
   Type,
   Image,
   Table,
   Edit,
 } from "lucide-react";
-
-interface Note {
-  id: number;
-  title: string;
-  content: string;
-  updatedAt: string;
-  folder: string;
-  isFavorite: boolean;
-}
+import { useNotes, Note } from "@/hooks/useNotes";
 
 interface NoteEditorProps {
   note?: Note;
@@ -44,12 +31,32 @@ interface NoteEditorProps {
 export function NoteEditor({ note, onClose }: NoteEditorProps) {
   const [title, setTitle] = useState(note?.title || "Untitled");
   const [content, setContent] = useState(note?.content || "");
-  const [isFavorite, setIsFavorite] = useState(note?.isFavorite || false);
   const [isEditMode, setIsEditMode] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [selectedText, setSelectedText] = useState("");
   const [selectionStart, setSelectionStart] = useState(0);
   const [selectionEnd, setSelectionEnd] = useState(0);
+  
+  const { createNote, updateNote, isCreating, isUpdating } = useNotes();
+
+  useEffect(() => {
+    if (note) {
+      setTitle(note.title);
+      setContent(note.content);
+    }
+  }, [note]);
+
+  const handleSave = () => {
+    if (note) {
+      updateNote({
+        id: note.id,
+        title,
+        content,
+      });
+    } else {
+      createNote({ title, content });
+    }
+  };
 
   const handleTextSelection = () => {
     if (textareaRef.current) {
@@ -98,6 +105,8 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
     { icon: Type, label: "Heading", action: () => insertText("# ") },
   ];
 
+  const isSaving = isCreating || isUpdating;
+
   return (
     <div className="flex flex-col h-full bg-white dark:bg-gray-900">
       {/* Header */}
@@ -112,13 +121,6 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
-          
-          <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-            <span>in</span>
-            <span className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-xs">
-              {note?.folder || "Personal"}
-            </span>
-          </div>
         </div>
         
         <div className="flex items-center gap-2">
@@ -132,22 +134,17 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
             {isEditMode ? "Preview" : "Edit"}
           </Button>
           
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsFavorite(!isFavorite)}
-            className={isFavorite ? "text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20" : "hover:bg-gray-100 dark:hover:bg-gray-700"}
-          >
-            <Star className={`h-4 w-4 ${isFavorite ? "fill-current" : ""}`} />
-          </Button>
-          
           <Button variant="ghost" size="sm" className="hover:bg-gray-100 dark:hover:bg-gray-700">
             <MoreVertical className="h-4 w-4" />
           </Button>
           
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white">
+          <Button 
+            onClick={handleSave}
+            disabled={isSaving}
+            className="bg-orange-500 hover:bg-orange-600 text-white"
+          >
             <Save className="h-4 w-4 mr-2" />
-            Save
+            {isSaving ? "Saving..." : "Save"}
           </Button>
         </div>
       </header>
@@ -208,7 +205,7 @@ export function NoteEditor({ note, onClose }: NoteEditorProps) {
         )}
         
         <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400">
-          <span>Last edited {note?.updatedAt || "just now"}</span>
+          <span>Last edited {note?.updated_at ? new Date(note.updated_at).toLocaleDateString() : "just now"}</span>
           <span>{content.length} characters</span>
         </div>
       </div>
