@@ -12,6 +12,7 @@ import Index from "./pages/Index";
 import Board from "./pages/Board";
 import Notes from "./pages/Notes";
 import Settings from "./pages/Settings";
+import AIAssistant from "./pages/AIAssistant";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -84,6 +85,11 @@ const App = () => (
             <Route path="/notes" element={
               <ProtectedRoute>
                 <Notes />
+              </ProtectedRoute>
+            } />
+            <Route path="/ai-assistant" element={
+              <ProtectedRoute>
+                <AIAssistant />
               </ProtectedRoute>
             } />
             <Route path="/settings" element={
