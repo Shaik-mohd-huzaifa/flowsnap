@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import {
   Sidebar,
@@ -6,24 +5,16 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   FileText,
-  FolderOpen,
-  Plus,
   Search,
   Settings,
-  Star,
-  Trash2,
-  Tag,
-  Archive,
   Home,
   LayoutDashboard,
 } from "lucide-react";
@@ -45,23 +36,6 @@ const workspaceItems = [
     url: "/notes",
     icon: FileText,
   },
-  {
-    title: "Favorites",
-    url: "/favorites",
-    icon: Star,
-  },
-  {
-    title: "Archive",
-    url: "/archive",
-    icon: Archive,
-  },
-];
-
-const folders = [
-  { name: "Work Projects", count: 12 },
-  { name: "Personal", count: 8 },
-  { name: "Ideas", count: 15 },
-  { name: "Meeting Notes", count: 6 },
 ];
 
 export function AppSidebar() {
@@ -137,67 +111,6 @@ export function AppSidebar() {
                   </SidebarMenuItem>
                 );
               })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="flex items-center justify-between px-3 py-2 dark:text-gray-400">
-            <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Folders</span>
-            <Button variant="ghost" size="sm" className="h-6 w-6 p-0 hover:bg-orange-100 dark:hover:bg-orange-900/20 group-data-[collapsible=icon]:hidden">
-              <Plus className="h-3 w-3" />
-            </Button>
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {folders.map((folder) => (
-                <SidebarMenuItem key={folder.name}>
-                  <SidebarMenuButton 
-                    className="w-full justify-between dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-700 dark:hover:text-orange-400 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:p-0"
-                    tooltip={folder.name}
-                  >
-                    <div className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center">
-                      <FolderOpen className="h-4 w-4 flex-shrink-0" />
-                      <span className="font-medium group-data-[collapsible=icon]:hidden">{folder.name}</span>
-                    </div>
-                    <span className="text-xs bg-gray-100 dark:bg-gray-700 dark:text-gray-300 px-2 py-0.5 rounded-full group-data-[collapsible=icon]:hidden">
-                      {folder.count}
-                    </span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="px-3 py-2">
-            <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Quick Actions</span>
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  className="w-full justify-start dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-700 dark:hover:text-orange-400 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:p-0"
-                  tooltip="Tags"
-                >
-                  <div className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center">
-                    <Tag className="h-4 w-4 flex-shrink-0" />
-                    <span className="font-medium group-data-[collapsible=icon]:hidden">Tags</span>
-                  </div>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  className="w-full justify-start dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-700 dark:hover:text-orange-400 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:p-0"
-                  tooltip="Trash"
-                >
-                  <div className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center">
-                    <Trash2 className="h-4 w-4 flex-shrink-0" />
-                    <span className="font-medium group-data-[collapsible=icon]:hidden">Trash</span>
-                  </div>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
