@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
@@ -16,7 +15,16 @@ import {
 import { NoteCard } from "@/components/NoteCard";
 import { NoteEditor } from "@/components/NoteEditor";
 
-const recentNotes = [
+interface MockNote {
+  id: number;
+  title: string;
+  content: string;
+  updatedAt: string;
+  folder: string;
+  isFavorite: boolean;
+}
+
+const recentNotes: MockNote[] = [
   {
     id: 1,
     title: "Project Planning Document",
@@ -60,7 +68,14 @@ export function MainContent() {
     return (
       <main className="flex-1 flex flex-col h-screen">
         <NoteEditor 
-          note={note} 
+          note={note ? {
+            id: note.id.toString(),
+            title: note.title,
+            content: note.content,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            user_id: "mock-user-id"
+          } : undefined}
           onClose={() => setSelectedNote(null)}
         />
       </main>
